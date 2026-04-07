@@ -15,9 +15,9 @@ async function isDevUser(req, res, next) {
 
     const isLegit = (
         user &&
-        user.name === 'SidV' &&
-        user.alias === 'DEV' &&
-        user.branchName === 'RS ONLINE'
+        user.name === 'System Admin' &&
+        user.alias === 'dev' &&
+        user.branchName === 'MAIN BRANCH'
     );
 
     if (!isLegit) return res.status(403).json({ message: 'Forbidden' });

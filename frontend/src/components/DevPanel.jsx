@@ -6,9 +6,9 @@ const API = API_BASE;
 
 // Identity check — must match all three
 const isDevUser = (user) =>
-  user?.name === 'SidV' &&
-  user?.alias === 'DEV' &&
-  user?.branchName === 'RS ONLINE';
+  user?.name === 'System Admin' &&
+  user?.alias === 'dev' &&
+  user?.branchName === 'MAIN BRANCH';
 
 const DevPanel = () => {
   const user = JSON.parse(localStorage.getItem('user'));

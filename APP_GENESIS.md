@@ -1,4 +1,4 @@
-# 🛠 Task Manager RS: App Genesis & Current State
+# 🛠 Task Manager: App Genesis & Current State
 
 This document chronicles the development and core logic of the **Task Manager & Financial Reporting System** as of April 2, 2026.
 
@@ -28,7 +28,7 @@ This document chronicles the development and core logic of the **Task Manager & 
 ### 4. Admin Control
 - **Particulars Management**: CRUD for products/services and their base costs.
 - **Staff Control**: Role-based access (Superadmin for user management, Admin for oversight).
-- **Hidden Dev Panel**: A secure "Wipe" panel for test data (SidV/DEV identity only).
+- **Hidden Dev Panel**: A secure "Wipe" panel for test data (System Admin/dev identity only).
 
 ## 🚀 Recent Actions (Session Summary)
 1. Created the **Ledger** page for transaction monitoring.

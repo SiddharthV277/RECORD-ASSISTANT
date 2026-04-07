@@ -86,8 +86,8 @@ function initializeDB() {
 
 function seedInitialData() {
     const branches = [
-        'RS ONLINE', 'CSP', 'BLOCK', 'CHUTIA', 'PAYWORLD', 
-        'METOWE', 'HOONER KENDRA', 'RS WATER', 'RS COMPUTER', 'RS TRAVELS'
+        'MAIN BRANCH', 'BRANCH_A', 'BRANCH_B', 'BRANCH_C', 'BRANCH_D', 
+        'BRANCH_E', 'BRANCH_F', 'BRANCH_G', 'BRANCH_H', 'BRANCH_I'
     ];
 
     const branchCount = db.prepare('SELECT COUNT(*) as count FROM Branch').get().count;
@@ -103,13 +103,13 @@ function seedInitialData() {
     const userCount = db.prepare('SELECT COUNT(*) as count FROM User').get().count;
     if (userCount === 0) {
         const hashedPassword = bcrypt.hashSync('admin123', 10);
-        const branchRow = db.prepare('SELECT id FROM Branch WHERE name = ?').get('RS ONLINE');
+        const branchRow = db.prepare('SELECT id FROM Branch WHERE name = ?').get('MAIN BRANCH');
         const branchId = branchRow ? branchRow.id : 1;
         
         db.prepare(`INSERT INTO User (name, email, password, role, alias, branchId) 
-                VALUES ('RS.ONLINE', 'admin@taskmanager.local', ?, 'SUPERADMIN', 'dev', ?)`).run(hashedPassword, branchId);
+                VALUES ('System Admin', 'admin@example.local', ?, 'SUPERADMIN', 'dev', ?)`).run(hashedPassword, branchId);
         
-        console.log('Seeded superadmin account (admin@taskmanager.local / admin123).');
+        console.log('Seeded superadmin account (admin@example.local / admin123).');
     }
 }
 

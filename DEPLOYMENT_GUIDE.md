@@ -1,4 +1,4 @@
-# 🚀 Task Manager RS: Official Deployment Guide
+# 🚀 Task Manager: Official Deployment Guide
 
 This guide provides a comprehensive walkthrough for setting up the **Master Server (CEO PC)** and enabling **Remote Access** for operators worldwide using Cloudflare Tunnels.
 
@@ -60,9 +60,9 @@ Cloudflare Tunnels allow you to access the server from anywhere without opening 
 ## 🏠 3. Local Network Access (Same Office)
 For operators working in the same office on the same Wi-Fi/LAN, they can connect directly via IP address for maximum speed.
 
-1. **Find Server IP**: On the Master Server, run `ipconfig`. Look for "IPv4 Address" (e.g., `192.168.29.120`).
+1. **Find Server IP**: On the Master Server, run `ipconfig`. Look for "IPv4 Address" (e.g., `192.168.x.x`).
 2. **Access from Client**: Operators can simply type the following in their browser:
-   `http://192.168.29.120:5173`
+   `http://192.168.x.x:5173`
 
 ---
 
@@ -78,5 +78,5 @@ For operators working in the same office on the same Wi-Fi/LAN, they can connect
 - **Port 3000/5173 Busy**: If an error says "Port already in use", run `pm2 kill` and then `pm2 start ecosystem.config.js` again.
 - **Blank Screen**: Ensure the Backend is running and the Cloudflare URLs are exactly as specified in the table above.
 
-*Owner: SidV | Brand: HUNAR KENDRA | System: RS ONLINE*
+*Owner: Your Name | Brand: Your Brand | System: Your System*
 

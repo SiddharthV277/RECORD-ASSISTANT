@@ -10,7 +10,7 @@ if (hostname === 'localhost' || hostname.startsWith('192.168.')) {
   apiBase = `http://${hostname}:3000`;
 } else {
   // 🔵 CASE 2: Remote Access via Cloudflare Tunnel
-  apiBase = 'https://manufacturers-div-visual-tend.trycloudflare.com';
+  apiBase = 'https://your-custom-tunnel.trycloudflare.com';
 }
 
 export const API_BASE = apiBase;

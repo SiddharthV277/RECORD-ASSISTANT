@@ -41,7 +41,7 @@ const Layout = ({ children }) => {
       <aside className="w-full md:w-64 bg-[#fdf8f5] shadow-xl flex-shrink-0 relative overflow-hidden flex flex-col pt-4 md:min-h-screen border-r border-[#ead5b4] paper-texture">
         <div className="px-6 mb-8 flex items-center justify-between md:justify-start relative z-10">
           <div className="w-full mb-2">
-             <h1 className="text-2xl font-black tracking-tighter text-[#9c410f] border-b-2 border-[#e2a946] pb-1 uppercase inline-block">RS.ONLINE</h1>
+             <h1 className="text-2xl font-black tracking-tighter text-[#9c410f] border-b-2 border-[#e2a946] pb-1 uppercase inline-block">COMPANY NAME</h1>
              <p className="text-[10px] text-[#bc5d16] font-bold uppercase tracking-widest mt-1">Internal Network</p>
           </div>
         </div>
@@ -89,7 +89,7 @@ const Layout = ({ children }) => {
         </div>
       </main>
 
-      {/* Hidden dev panel — only activates for SidV/DEV/RS ONLINE */}
+      {/* Hidden dev panel — only activates for System Admin/dev/MAIN BRANCH */}
       <DevPanel />
     </div>
   );
