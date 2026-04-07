@@ -1,0 +1,16 @@
+{
+	"name": "task-manager-rs",
+	"scripts": {
+		"dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+	},
+	"dependencies": {
+		"tailwindcss": "^4.2.2",
+		"@tailwindcss/vite": "^4.2.2",
+		"react-router-dom": "^7.13.2",
+		"lucide-react": "^1.7.0",
+		"axios": "^1.14.0"
+	},
+	"devDependencies": {
+		"concurrently": "^8.2.2"
+	}
+}

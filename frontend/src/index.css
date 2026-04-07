@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-50: #fdf8f5;
+  --color-primary-100: #faeee7;
+  --color-primary-500: #d38c32;
+  --color-primary-600: #bc5d16;
+  --color-primary-700: #9c410f;
+  --color-paper: #ead5b4;
+  --color-gold: #e2a946;
+  --color-rust: #9c410f;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fdf8f5; /* Light warm cream */
+  color: #3f2a1d; /* Deep warm brown for text */
+}
+
+/* Beautiful noise texture that emulates watercolor paper */
+.paper-texture {
+  position: relative;
+}
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.5'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.watercolor-bg {
+  background: 
+    radial-gradient(circle at 0% 0%, rgba(234, 213, 180, 0.9) 0%, transparent 50%),
+    radial-gradient(circle at 100% 30%, rgba(226, 169, 70, 0.8) 0%, transparent 60%),
+    radial-gradient(circle at 40% 100%, rgba(211, 140, 50, 0.8) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(156, 65, 15, 0.8) 0%, transparent 70%);
+  background-color: #bc5d16;
+}

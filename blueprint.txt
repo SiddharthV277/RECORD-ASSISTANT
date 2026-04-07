@@ -1,0 +1,491 @@
+TASK MANAGER SYSTEM — BUSINESS LOGIC & FUNCTIONAL SPECIFICATION
+
+==================================================
+🧠 SYSTEM PURPOSE
+=================
+
+This system is designed to manage internal operations across multiple branches of an organization.
+
+It provides structured control over:
+
+* Users (with hierarchy and authority levels)
+* Tasks (assignment, tracking, completion)
+* Branch-based access
+* Future reporting capabilities
+
+The system must reflect real-world organizational hierarchy and workflow.
+
+==================================================
+🏢 BRANCH STRUCTURE
+===================
+
+The organization operates across multiple branches.
+
+Each branch represents a separate operational unit.
+
+Examples of branches include:
+
+* RS ONLINE
+* CSP
+* BLOCK
+* CHUTIA
+* PAYWORLD
+* METOWE
+* HOONER KENDRA
+* RS WATER
+* RS COMPUTER
+* RS TRAVELS
+
+Every user belongs to exactly one branch.
+
+All actions performed by a user are scoped to their branch unless they have global authority.
+
+==================================================
+👤 USER LEVELS & AUTHORITY
+==========================
+
+There are three primary levels of authority:
+
+---
+
+1. SUPERADMIN
+
+---
+
+Aliases:
+
+* CEO
+* DEV
+
+Capabilities:
+
+* Full system access
+* Can create, edit, and delete any user
+* Can assign tasks to any user in any branch
+* Can mark any task as completed
+* Can view all data across all branches
+
+This is the highest authority level.
+
+---
+
+2. ADMIN
+
+---
+
+Aliases:
+
+* COO
+* Accountant
+* HR
+
+Capabilities:
+
+* Can assign tasks within their branch
+* Can mark tasks as completed
+* Can view users and tasks within their branch
+* Cannot manage Superadmin accounts
+* Cannot access other branches
+
+Admins operate at a branch level.
+
+---
+
+3. OPERATOR
+
+---
+
+Alias:
+
+* Coordinator
+
+Capabilities:
+
+* Can view tasks assigned to them
+* Can update task status to "Check" (in_review)
+* Cannot assign tasks
+* Cannot complete tasks
+* Cannot edit or delete tasks
+
+Operators are execution-level users.
+
+==================================================
+🔐 USER MANAGEMENT LOGIC
+========================
+
+User management is controlled strictly by authority level.
+
+---
+
+## Superadmin:
+
+* Can create new users
+* Can assign roles and aliases
+* Can assign users to branches
+* Can reset passwords
+* Can delete users
+
+---
+
+## Admin:
+
+* Cannot create or delete users
+* May view users within their branch
+
+---
+
+## Operator:
+
+* No access to user management
+
+User creation must include:
+
+* Name
+* Email
+* Password
+* Role
+* Alias
+* Branch
+
+==================================================
+📋 TASK MANAGEMENT SYSTEM
+=========================
+
+Tasks are the core functional unit of the system.
+
+Each task contains:
+
+* Title
+* Description
+* Assigned By (user)
+* Assigned To (user)
+* Status
+
+---
+
+## TASK STATUS FLOW
+
+Tasks follow a strict lifecycle:
+
+1. pending
+
+   * Task is created and assigned
+
+2. in_review (Check)
+
+   * Marked by Operator when work is done
+
+3. completed
+
+   * Marked by Admin or Superadmin after verification
+
+---
+
+## ROLE-BASED TASK CONTROL
+
+Superadmin:
+
+* Can create tasks
+* Can assign to any user
+* Can mark any task as completed
+
+Admin:
+
+* Can create tasks
+* Can assign tasks within branch
+* Can mark tasks as completed
+
+Operator:
+
+* Can view assigned tasks
+* Can mark task as "in_review"
+* Cannot mark completed
+* Cannot edit task details
+
+---
+
+## IMPORTANT RULES
+
+* Only Admin or Superadmin can finalize tasks
+* Operators cannot bypass review stage
+* Task creator cannot be overridden by lower authority
+
+==================================================
+📊 REPORT SECTION (FUTURE IMPLEMENTATION)
+=========================================
+
+The report section is reserved for future expansion.
+
+It will provide insights such as:
+
+* Total tasks per branch
+* Completed vs pending tasks
+* Task completion rates per user
+* Branch performance comparison
+
+Currently, this section should be marked as:
+
+"COMING SOON"
+
+No implementation required at this stage.
+
+==================================================
+🎯 SYSTEM BEHAVIOR SUMMARY
+==========================
+
+* Every user operates within a defined authority level
+* Every action is restricted based on role
+* Every user belongs to a branch
+* Tasks flow through a controlled lifecycle
+* No action should bypass role restrictions
+
+==================================================
+🧠 DESIGN PRINCIPLE
+===================
+
+The system must reflect real-world hierarchy:
+
+Superadmin → controls system
+Admin → manages operations
+Operator → executes tasks
+
+There should be no ambiguity in permissions.
+
+If a user should not have access in real life, they should not have access in the system.
+
+==================================================
+END OF DOCUMENT
+===============
+
+
+TASK MANAGER APP — CLEAN START (SIMPLE MODE)
+
+==================================================
+🚨 CORE RULE (MOST IMPORTANT)
+=============================
+
+This is a SIMPLE LOCAL SYSTEM.
+
+DO NOT:
+
+* Use MySQL Server
+* Use Prisma
+* Use JWT
+* Use complex architecture
+* Use middleware layers
+* Overengineer anything
+
+System must behave like:
+👉 PHP + phpMyAdmin system (CIMS style)
+
+==================================================
+🧱 TECH STACK (FINAL)
+=====================
+
+Frontend:
+
+* React (Vite)
+* Tailwind CSS
+
+Backend:
+
+* Node.js
+* Express
+
+Database:
+
+* SQLite (file-based database)
+
+==================================================
+📁 PROJECT STRUCTURE
+====================
+
+task-manager-app/
+
+backend/
+server.js
+db.js
+routes/
+auth.js
+tasks.js
+users.js
+
+frontend/
+(React app)
+
+==================================================
+📦 BACKEND SETUP
+================
+
+Install:
+
+pnpm init
+pnpm add express sqlite3 bcrypt cors
+
+==================================================
+🗄️ DATABASE (SQLITE)
+=====================
+
+Create file:
+
+backend/database.db
+
+Tables:
+
+Branch:
+
+* id INTEGER PRIMARY KEY AUTOINCREMENT
+* name TEXT
+* location TEXT
+
+User:
+
+* id INTEGER PRIMARY KEY AUTOINCREMENT
+* name TEXT
+* email TEXT UNIQUE
+* password TEXT
+* role TEXT
+* alias TEXT
+* branchId INTEGER
+
+Task:
+
+* id INTEGER PRIMARY KEY AUTOINCREMENT
+* title TEXT
+* description TEXT
+* status TEXT DEFAULT 'pending'
+* assignedBy INTEGER
+* assignedTo INTEGER
+
+==================================================
+🔌 DATABASE CONNECTION (db.js)
+==============================
+
+Use sqlite3 package.
+
+Connect to:
+
+./database.db
+
+==================================================
+🔐 AUTH SYSTEM (VERY SIMPLE)
+============================
+
+Route:
+POST /api/auth/login
+
+Input:
+
+* username
+* password
+* branchId(optional)
+
+Logic:
+
+* SELECT user WHERE email AND branchId
+* Compare password using bcrypt
+* Return user object
+
+NO TOKEN
+NO SESSION
+
+==================================================
+📋 TASK SYSTEM
+==============
+
+Routes:
+
+POST /api/tasks
+GET /api/tasks
+PUT /api/tasks/:id/status
+
+Status flow:
+pending → in_review → completed
+
+==================================================
+👤 USER SYSTEM
+==============
+
+Routes:
+
+GET /api/users
+POST /api/users
+PUT /api/users/:id
+DELETE /api/users/:id
+
+Only Superadmin can manage users
+
+==================================================
+🏢 ROLES
+========
+
+Superadmin:
+
+* CEO, DEV
+
+Admin:
+
+* COO, Accountant, HR
+
+Operator:
+
+* Coordinator
+
+==================================================
+🎨 FRONTEND
+===========
+
+Pages:
+
+/login
+/dashboard
+/tasks
+/admin
+
+==================================================
+🔄 FRONTEND LOGIC
+=================
+
+Login:
+
+* Call backend
+* Store user in localStorage
+* Redirect
+
+==================================================
+🌐 NETWORK
+==========
+
+App runs locally.
+
+Cloudflare Tunnel will be added LATER.
+
+DO NOT implement sync logic.
+
+==================================================
+🚫 STRICTLY FORBIDDEN
+=====================
+
+DO NOT:
+
+* Use MySQL
+* Use Prisma
+* Use JWT
+* Use Redux
+* Use complex folder structures
+
+==================================================
+🎯 OBJECTIVE
+============
+
+Build a SIMPLE internal system like:
+
+👉 PHP + phpMyAdmin
+
+But using:
+
+👉 React + Node + SQLite
+
+==================================================
+END
+===
