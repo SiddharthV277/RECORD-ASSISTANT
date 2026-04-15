@@ -1,152 +1,136 @@
 <div align="center">
   <h1>📊 Record Assistant</h1>
-  <p><b>Enterprise-Level Task & Financial Management System</b></p>
-  <p><i>A complete journey from conceptualization to global production deployment.</i></p>
+  <p><b>Internal Operations & Financial Management System</b></p>
+  <p><i>Built to manage real branches. Currently in active use.</i></p>
 
-  <!-- Badges -->
-  <img src="https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
-  <img src="https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React"/>
-  <img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB" alt="Express.js"/>
-  <img src="https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"/>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js"/>
+  <img src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"/>
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite"/>
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/Cloudflare_Tunnels-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare"/>
 </div>
 
 ---
 
-## 📖 Table of Contents
-1. [Project Overview](#-project-overview)
-2. [The Journey: Planning to Production](#-the-journey-planning-to-production)
-    - [Phase 1: Architecture & Blueprint](#phase-1-architecture--blueprint)
-    - [Phase 2: Core Engineering](#phase-2-core-engineering)
-    - [Phase 3: Production & Security](#phase-3-production--security)
-3. [Core Technical Features](#-core-technical-features)
-4. [System Architecture](#-system-architecture)
-5. [Getting Started](#-getting-started)
+## What is this?
+
+This is an internal management system I built for a real multi-branch organization. It handles daily task delegation, financial settlements, and end-of-day reporting across branches like RS Online, CSP, Payworld, RS Travels, and others.
+
+The problem I was solving: the business was running everything on WhatsApp messages and spreadsheets. There was no way to track who did what, which branch sent how much money, or whether tasks were actually completed. I built this to fix that.
+
+It's currently **deployed and actively used** by staff across multiple branches. Operators log in daily to submit their records and mark tasks. Admins use it to verify settlements and monitor cash flow. The system runs 24/7 on a master PC and is accessible globally via Cloudflare Tunnels.
 
 ---
 
-## 🌟 Project Overview
+## Why I made certain technical decisions
 
-**Record Assistant** is a comprehensive, lightweight system built for multi-branch organizational management. It was created to solve a complex real-world problem: tracking financial settlements, daily operations, and task delegation across multiple physical locations without relying on heavy cloud database infrastructures. 
+**SQLite over MySQL** — The business doesn't have a dedicated database server, and I didn't want to introduce that dependency. SQLite runs as a single file, backups are trivial, and for the read/write load of this application, it's more than fast enough. I used Node's experimental native `node:sqlite` module directly in some places to avoid unnecessary abstraction.
 
-The application enforces a rigid, audited settlement process, ensuring accurate tracking of end-of-day balances and operator task assignments while maintaining strict role-based access control.
+**No JWT, no sessions** — The system operates on a trusted internal network (or through Cloudflare's zero-trust tunnel). Adding JWT would mean managing token expiry, refresh flows, and more surface area for bugs. A simple credential check on each request is sufficient and easier for non-technical staff to work with (no "session expired" confusion).
 
----
+**Cloudflare Tunnels instead of port forwarding** — The server PC sits behind a residential internet connection. Opening ports exposes the server IP. With Cloudflare Tunnels, the machine makes an outbound-only connection to Cloudflare's edge. Staff access it via a clean `https://` domain. No exposed IPs, no firewall rules to maintain.
 
-## 🚀 The Journey: Planning to Production
-
-Building Record Assistant wasn't just about putting code together; it was a carefully orchestrated process from defining rigid business logic to deploying a secure, globally accessible application from a local master node.
-
-### Phase 1: Architecture & Blueprint
-The project began with a strict architectural philosophy: **Keep it fast, keep it localized, but make it universally accessible.**
-- **The Constraints:** I needed a system that acts like a traditional heavy application (e.g., PHP/MySQL) but built on a modern stack. It was decided early on to bypass complex ORMs (like Prisma) and heavy databases (MySQL) in favor of the lightweight, lightning-fast native `node:sqlite`.
-- **Role-Based Blueprint:** The core design principle was mimicking real-world hierarchy:
-  - *Superadmin (CEO/Dev)*: Full system control, branch-agnostic.
-  - *Admin (COO/Accountant)*: Branch-level management and ledger oversight.
-  - *Operator (Coordinator)*: Execution-level, limited to task completion and financial logging.
-- **Result:** A robust system blueprint defining entities, permissions boundaries, and rigid deployment rules.
-
-### Phase 2: Core Engineering
-With the blueprint set, development moved to the core mechanics. Focus was placed on stability and mathematical accuracy.
-- **Advanced Multi-Settlement Logic:** Built a chained settlement engine. Users can settle their financial drawers multiple times daily. Each new settlement acts as a linked node, automatically pulling the "Kept Amount" from the previous session as the new "Opening Balance". 
-- **Real-Time Financial Ledger:** Implemented a full audit trail capturing cost variations, pending records, and transaction timestamps, giving Admins a bird's-eye view of organizational cash flow across all branches.
-- **Network-Agnostic Build:** Engineered the Vite frontend and Express backend to dynamically adapt to connection environments (localhost, local Wi-Fi, or global web) without requiring rebuilds or rigid hardcoded IP addresses. All network mapping is dynamic.
-
-### Phase 3: Production & Security
-The final challenge was deployment. How do we make a "local" application globally accessible to branch operators worldwide securely, without exposing the master server to the raw internet?
-- **Process Management:** Leveraged `PM2` with an `ecosystem.config.js` to ensure the application runs 24/7 on the master node, surviving system reboots and crashes gracefully.
-- **Zero-Trust Global Network:** Instead of port-forwarding and exposing server IPs to potential threats, I configured **Cloudflare Tunnels**. This creates an outbound-only connection to Cloudflare's edge network. Operators log in via a public `https://` domain, which securely tunnels directly to the locked-down master PC. 
-- **Result:** Enterprise-grade security on a local-first application architecture.
+**No ORM** — I wrote raw SQL. The schema is not complex, and using an ORM like Prisma adds a build step, migration files, and a learning curve. Direct queries are readable, debuggable, and fast.
 
 ---
 
-## 🛠 Core Technical Features
+## What it does
 
-| Feature | Technical Implementation |
-| :--- | :--- |
-| **Chained Settlements** | Local SQLite algorithms that prevent orphaned records by seamlessly linking multi-day/multi-session balances. |
-| **Dynamic API Routing** | Frontend intercepts current `window.location.hostname` to auto-map backend API endpoints dynamically for local or remote clients. |
-| **Role-Based Access Control** | Express middleware enforcing strict CRUD limitations based on user roles and authority boundaries. |
-| **Silent Dev Panel** | Undocumented, highly secure UI components injected to allow deep data sanitization and test wiping without manual DB intervention. |
-| **Instant Analytics** | Calculating financial variance `(price - cost)` entirely dynamically on entry, optimizing performance. |
+### Role-Based Access (3 levels)
+
+| Role | What they can do |
+|:---|:---|
+| **Superadmin** (CEO / Dev) | Full system access — manage users, branches, tasks, view all data |
+| **Admin** (COO / Accountant) | Branch-level access — assign tasks, verify settlements, view ledger |
+| **Operator** (Coordinator) | Submit daily records, mark tasks as "in review", settle their drawer |
+
+### Financial Settlements (the core feature)
+
+Each operator has a financial "drawer" they settle at end of day. The tricky part: they can settle multiple times a day. I built a chained settlement engine where each new settlement automatically picks up the "kept amount" from the previous one as its opening balance. Records are permanently linked to their settlement for auditing.
+
+### Task Management
+
+Tasks flow through `pending → in_review → completed`. Operators can only push to `in_review`. Only Admins and above can mark complete. This prevents operators from self-approving their own work.
+
+### Financial Ledger
+
+Admins see a live audit trail of all settlements across all branches — who sent what, when, with expandable cost/profit breakdowns. Filterable by date and staff member.
+
+### Hidden Dev Panel
+
+There's an undocumented UI panel (only accessible at the Superadmin level with a specific identity check) that allows wiping test data without touching the database manually. Useful during testing and onboarding new branches.
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
-```mermaid
-graph TD
-    %% Define Styles
-    classDef frontend fill:#3178C6,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef backend fill:#68A063,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef network fill:#F38020,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef db fill:#003B57,stroke:#fff,stroke-width:2px,color:#fff;
-
-    subgraph The World
-        C1[Operator 1]:::frontend
-        C2[Operator 2]:::frontend
-        CX[Global Access]:::frontend
-    end
-
-    CF[Cloudflare Tunnel <br> Zero Trust Edge]:::network
-
-    subgraph Master Server PC
-        PM2{PM2 Process Manager}
-        
-        FE[Vite React App <br> Port 5173]:::frontend
-        BE[Node Express API <br> Port 3000]:::backend
-        SQL[(SQLite File <br> database.db)]:::db
-        
-        PM2 --> FE
-        PM2 --> BE
-        BE <--> SQL
-    end
-
-    C1 --> CF
-    C2 --> CF
-    CX --> CF
-    CF <==> FE
-    CF <==> BE
+```
+Global Staff
+    │
+    ▼
+Cloudflare Tunnel (outbound-only, zero-trust)
+    │
+    ▼
+Master PC (runs 24/7 via PM2)
+    ├── React + Vite frontend   (port 5173)
+    └── Express API             (port 3000)
+              │
+              ▼
+         SQLite DB (database.db)
 ```
 
+The frontend dynamically resolves the API base URL based on `window.location.hostname` — so the same build works on localhost, local Wi-Fi, and the public Cloudflare domain without any rebuild or config change.
+
 ---
 
-## 🏁 Getting Started (For Reviewers & Devs)
+## Running it locally
 
-If you'd like to inspect the code locally or run your own instance:
+### Requirements
+- Node.js v18+
+- pnpm (`npm install -g pnpm`)
 
-### 1. Prerequisites
-- **Node.js**: v18+ LTS
-- **PM2**: `npm install -g pm2`
+### Install
 
-### 2. Installation
-```powershell
-# Clone the repository
+```bash
 git clone https://github.com/SiddharthV277/RECORD-ASSISTANT.git
 cd RECORD-ASSISTANT
 
-# Install dependencies (Root, Backend, Frontend)
-npm install
-cd backend; npm install; cd ..
-cd frontend; npm install; cd ..
+# Install all dependencies
+pnpm install
+cd backend && pnpm install && cd ..
+cd frontend && pnpm install && cd ..
+
+# Approve native module builds (sqlite3, bcrypt)
+cd backend && pnpm approve-builds && cd ..
+cd frontend && pnpm approve-builds && cd ..
 ```
 
-### 3. Run the System
-Fire up both the frontend and backend servers simultaneously:
-```powershell
+### Start (dev)
+
+```bash
+pnpm run dev
+```
+
+Frontend: http://localhost:5173  
+Backend API: http://localhost:3000
+
+### Default login
+
+```
+Email:    admin@example.local
+Password: admin123
+```
+
+### Production (PM2)
+
+```bash
 pm2 start ecosystem.config.js
 ```
-
-### 4. Access Default Credentials
-The system automatically populates a default Super Admin account on the initial run:
-- **Email**: `admin@example.local`
-- **Password**: `admin123`
 
 ---
 
 <div align="center">
-  <b>Architected & Developed by <a href="https://github.com/SiddharthV277">SiddharthV277</a></b><br>
-  <i>Showcasing practical engineering and reliable deployment strategies.</i>
+  Built by <a href="https://github.com/SiddharthV277">Siddharth V</a> — a real system for a real problem.
 </div>
